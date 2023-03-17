@@ -27,7 +27,7 @@ namespace HuntersHarpoonRework
 
     //This is the main declaration of our plugin class. BepInEx searches for all classes inheriting from BaseUnityPlugin to initialize on startup.
     //BaseUnityPlugin itself inherits from MonoBehaviour, so you can use this as a reference for what you can declare and use in your plugin class: https://docs.unity3d.com/ScriptReference/MonoBehaviour.html
-    public class BalancedLunars : BaseUnityPlugin
+    public class HuntersHarpoonRework : BaseUnityPlugin
     {
         //The Plugin GUID should be a unique ID for this plugin, which is human readable (as it is used in places like the config).
         //If we see this PluginGUID as it is on thunderstore, we will deprecate this mod. Change the PluginAuthor and the PluginName !
@@ -45,7 +45,27 @@ namespace HuntersHarpoonRework
             {
                 IL.RoR2.CharacterBody.RecalculateStats += (il) =>
                 {
-                    
+                    ILCursor c = new ILCursor(il);
+                    c.TryGotoNext(
+                        x => x.MatchLdarg(out _),
+                        x => x.MatchLdflda(out _),
+                        x => x.MatchLdcI4(out _),
+                        x => x.MatchCallOrCallvirt<RoR2.DamageInfo>(nameof(RoR2.DamageInfo.procChainMask))/*,
+                        x => x.MatchLdcR4(out _),
+                        x => x.MatchMul()*/
+                    );
+                    c.Emit(OpCodes.Ldarg_1);
+                    c.EmitDelegate<Action<RoR2.DamageInfo>>(damageInfo =>
+                    {
+                        CharacterBody body = damageInfo.attacker.GetComponent<CharacterBody>();
+                        int buffCount = body.GetBuffCount(DLC1Content.Buffs.KillMoveSpeed);
+                        if (buffCount > 0)
+                        {
+                            damageInfo.damage *= (1 + buffCount / 100);
+                            //body.ClearTimedBuffs(DLC1Content.Buffs.KillMoveSpeed);
+                            body.SetBuffCount(DLC1Content.Buffs.KillMoveSpeed.buffIndex, 0);
+                        }
+                    });
                 };
 
                 
