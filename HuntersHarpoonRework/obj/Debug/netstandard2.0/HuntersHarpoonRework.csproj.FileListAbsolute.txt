@@ -1,0 +1,10 @@
+C:\Users\Dan\source\repos\HuntersHarpoonRework\HuntersHarpoonRework\bin\Debug\netstandard2.0\HuntersHarpoonRework.deps.json
+C:\Users\Dan\source\repos\HuntersHarpoonRework\HuntersHarpoonRework\bin\Debug\netstandard2.0\HuntersHarpoonRework.dll
+C:\Users\Dan\source\repos\HuntersHarpoonRework\HuntersHarpoonRework\bin\Debug\netstandard2.0\HuntersHarpoonRework.pdb
+C:\Users\Dan\source\repos\HuntersHarpoonRework\HuntersHarpoonRework\obj\Debug\netstandard2.0\HuntersHarpoonRework.csproj.AssemblyReference.cache
+C:\Users\Dan\source\repos\HuntersHarpoonRework\HuntersHarpoonRework\obj\Debug\netstandard2.0\HuntersHarpoonRework.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Dan\source\repos\HuntersHarpoonRework\HuntersHarpoonRework\obj\Debug\netstandard2.0\HuntersHarpoonRework.AssemblyInfoInputs.cache
+C:\Users\Dan\source\repos\HuntersHarpoonRework\HuntersHarpoonRework\obj\Debug\netstandard2.0\HuntersHarpoonRework.AssemblyInfo.cs
+C:\Users\Dan\source\repos\HuntersHarpoonRework\HuntersHarpoonRework\obj\Debug\netstandard2.0\HuntersHarpoonRework.csproj.CoreCompileInputs.cache
+C:\Users\Dan\source\repos\HuntersHarpoonRework\HuntersHarpoonRework\obj\Debug\netstandard2.0\HuntersHarpoonRework.dll
+C:\Users\Dan\source\repos\HuntersHarpoonRework\HuntersHarpoonRework\obj\Debug\netstandard2.0\HuntersHarpoonRework.pdb
