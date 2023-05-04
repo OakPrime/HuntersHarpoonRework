@@ -35,7 +35,7 @@ namespace HuntersHarpoonRework
         public const string PluginGUID = PluginAuthor + "." + PluginName;
         public const string PluginAuthor = "OakPrime";
         public const string PluginName = "HuntersHarpoonRework";
-        public const string PluginVersion = "0.2.0";
+        public const string PluginVersion = "0.2.1";
 
         private readonly Dictionary<string, string> DefaultLanguage = new Dictionary<string, string>();
 
@@ -45,6 +45,9 @@ namespace HuntersHarpoonRework
             try
             {      
                 // Either move to takeDamage in HealthComponent or modify this code to create a new damage instance on the victim (through projectile or calling takeDamage)
+                /**
+                 *  Damage boost based on harpoon buff stacks
+                 */
                 IL.RoR2.HealthComponent.TakeDamage += (il) =>
                 {
                     // onHitEnemy (separate damage instance)
@@ -80,22 +83,10 @@ namespace HuntersHarpoonRework
                         return newDamageVal;
                     });
                     c.Emit(OpCodes.Stloc, 6);
-
-                    //sep test
-                    /*c.TryGotoNext(
-                        x => x.MatchLdloc(out _),
-                        x => x.MatchLdcR4(out _),
-                        x => x.MatchLdcR4(out _),
-                        x => x.MatchLdloc(out _),
-                        x => x.MatchConvR4(),
-                        x => x.MatchMul(),
-                        x => x.MatchAdd()
-                    );
-                    c.Emit(OpCodes.Ldloc, 6);
-                    c.Emit(OpCodes.Ldc_R4, 100.0f);
-                    c.Emit(OpCodes.Add);
-                    c.Emit(OpCodes.Stloc, 6);*/
                 };
+                /**
+                 *  Adds item behavior
+                 */
                 IL.RoR2.CharacterBody.OnInventoryChanged += (il) =>
                 {
                     ILCursor c = new ILCursor(il);
@@ -112,6 +103,9 @@ namespace HuntersHarpoonRework
                         body.AddItemBehavior<HuntersHarpoonBehavior>(body.inventory.GetItemCount(DLC1Content.Items.MoveSpeedOnKill));
                     });
                 };
+                /**
+                 *  Applies move speed
+                 */
                 IL.RoR2.CharacterBody.RecalculateStats += (il) =>
                 {
                     ILCursor c = new ILCursor(il);
@@ -130,6 +124,11 @@ namespace HuntersHarpoonRework
                         x => x.MatchLdarg(out _)
                     );
                     //c.RemoveRange(3);
+                    c.Index++;
+                    c.EmitDelegate<Func<int, int>>(num =>
+                    {
+                        return 1;
+                    });
 
                     c.TryGotoNext(
                         x => x.MatchLdloc(out _),
@@ -154,19 +153,23 @@ namespace HuntersHarpoonRework
                     });
 
 
-                    /*
-                    if (this.HasBuff(RoR2Content.Buffs.WhipBoost))
-                        if (spearItem == 0 || spearBuff)
-                            num64 += (float)num6 * 0.3f; //comes from redwhip
-                        else
-                            num64 += spearItem * 0.3f; //comes from spear
-                    */
-
-
-
 
                 };
-
+                /**
+                 *  Stops old harpoon buff generation logic
+                 */ 
+                IL.RoR2.GlobalEventManager.OnCharacterDeath += (il) =>
+                {
+                    ILCursor c = new ILCursor(il);
+                    c.TryGotoNext(
+                        x => x.MatchLdloc(48),
+                        x => x.MatchLdcI4(0),
+                        x => x.MatchBle(out _)
+                    );
+                    c.Index++;
+                    c.Emit(OpCodes.Ldc_I4_0);
+                    c.Emit(OpCodes.Mul);
+                };
             }
             catch (Exception e)
             {
