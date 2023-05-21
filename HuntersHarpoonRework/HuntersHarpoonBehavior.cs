@@ -18,12 +18,30 @@ namespace HuntersHarpoonRework.Behaviors
 {
     public class HuntersHarpoonBehavior : CharacterBody.ItemBehavior
     {
+        private int ticks = 0;
+        public bool generatingStacks = true;
         private void FixedUpdate()
         {
-            if (this.body.isSprinting && this.body.GetBuffCount(DLC1Content.Buffs.KillMoveSpeed) < 100)
+            int buffCount = this.body.GetBuffCount(DLC1Content.Buffs.KillMoveSpeed);
+            if (buffCount <= 0 && !this.generatingStacks)
             {
-                this.body.AddBuff(DLC1Content.Buffs.KillMoveSpeed);
+                this.generatingStacks = true;
             }
+            if (this.generatingStacks && this.body.isSprinting && buffCount < 100)
+            {
+                ticks++;
+                if (ticks > 1 )
+                {
+                    this.body.AddBuff(DLC1Content.Buffs.KillMoveSpeed);
+                    ticks = 0;
+                }
+                
+            }
+        }
+
+        private void OnDisable()
+        {
+            this.body.SetBuffCount(DLC1Content.Buffs.KillMoveSpeed.buffIndex, 0);
         }
     }
 

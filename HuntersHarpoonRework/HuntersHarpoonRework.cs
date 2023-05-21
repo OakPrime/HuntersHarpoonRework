@@ -35,7 +35,7 @@ namespace HuntersHarpoonRework
         public const string PluginGUID = PluginAuthor + "." + PluginName;
         public const string PluginAuthor = "OakPrime";
         public const string PluginName = "HuntersHarpoonRework";
-        public const string PluginVersion = "0.2.1";
+        public const string PluginVersion = "0.3.0";
 
         private readonly Dictionary<string, string> DefaultLanguage = new Dictionary<string, string>();
 
@@ -43,7 +43,7 @@ namespace HuntersHarpoonRework
         public void Awake()
         {
             try
-            {      
+            {
                 // Either move to takeDamage in HealthComponent or modify this code to create a new damage instance on the victim (through projectile or calling takeDamage)
                 /**
                  *  Damage boost based on harpoon buff stacks
@@ -74,11 +74,34 @@ namespace HuntersHarpoonRework
                         float newDamageVal = damageVal;
                         CharacterBody body = damageInfo.attacker.GetComponent<CharacterBody>();
                         int buffCount = body.GetBuffCount(DLC1Content.Buffs.KillMoveSpeed);
-                        if (buffCount > 0 && damageInfo.procCoefficient >= 0.5f)
+                        ProcChainMask mask = damageInfo.procChainMask;
+                        if (buffCount > 0 && damageInfo.procCoefficient >= 0.5f && body?.GetComponent<HuntersHarpoonBehavior>()?.generatingStacks == true && !mask.HasProc(ProcType.Missile)
+                            && !mask.HasProc(ProcType.ChainLightning) && !mask.HasProc(ProcType.BounceNearby) && !mask.HasProc(ProcType.Thorns) && !mask.HasProc(ProcType.LoaderLightning))
                         {
-                            newDamageVal *= (1.0f + (float)buffCount / 100);
+                            newDamageVal *= (1.0f + (float)buffCount / 200);
+                            body.GetComponent<HuntersHarpoonBehavior>().generatingStacks = false;
                             body.SetBuffCount(DLC1Content.Buffs.KillMoveSpeed.buffIndex, 0);
-                            body.AddTimedBuff(RoR2Content.Buffs.WhipBoost, buffCount * 0.03f);
+                            body.AddTimedBuff(DLC1Content.Buffs.KillMoveSpeed, buffCount * 0.03f);
+                            body.AddTimedBuff(DLC1Content.Buffs.KillMoveSpeed, buffCount * 0.015f);
+                            body.AddTimedBuff(DLC1Content.Buffs.KillMoveSpeed, buffCount * 0.0075f);
+                            body.AddTimedBuff(DLC1Content.Buffs.KillMoveSpeed, buffCount * 0.00375f);
+                            body.AddTimedBuff(DLC1Content.Buffs.KillMoveSpeed, buffCount * 0.00185f);
+                            EffectData effectData = new EffectData();
+                            effectData.origin = body.corePosition;
+                            CharacterMotor characterMotor = body.characterMotor;
+                            bool flag = false;
+                            if ((bool)(UnityEngine.Object)characterMotor)
+                            {
+                                Vector3 moveDirection = characterMotor.moveDirection;
+                                if (moveDirection != Vector3.zero)
+                                {
+                                    effectData.rotation = Util.QuaternionSafeLookRotation(moveDirection);
+                                    flag = true;
+                                }
+                            }
+                            if (!flag)
+                                effectData.rotation = body.transform.rotation;
+                            EffectManager.SpawnEffect(LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/MoveSpeedOnKillActivate"), effectData, true);
                         }
                         return newDamageVal;
                     });
@@ -113,7 +136,18 @@ namespace HuntersHarpoonRework
                         x => x.MatchLdarg(out _),
                         x => x.MatchLdsfld("RoR2.DLC1Content/Buffs", "KillMoveSpeed")
                     );
-                    c.Index += 4;
+                    c.Index++;
+                    c.RemoveRange(3);         
+                    //c.Index += 4;
+                    c.EmitDelegate<Func<RoR2.CharacterBody, float>>(body =>
+                    {
+                        if (body?.GetComponent<HuntersHarpoonBehavior>()?.generatingStacks == false)
+                        {
+                            return (float)body.GetBuffCount(DLC1Content.Buffs.KillMoveSpeed);
+                        }
+                        return 0.0f;
+                    });
+                    /*
                     c.Emit(OpCodes.Ldc_R4, 0.00f);
                     c.Emit(OpCodes.Mul);
 
@@ -141,16 +175,25 @@ namespace HuntersHarpoonRework
                     c.EmitDelegate<Func<RoR2.CharacterBody, float, float, float>>((body, whipCount, whipSpeedVal) =>
                     {
                         float moveSpeedVal = 0;
+                        /*int harpoonCount = body.inventory.GetItemCount(DLC1Content.Items.MoveSpeedOnKill);
+                        if (harpoonCount > 0 && (!body.outOfCombat || whipCount <= 0 ))
+                        {
+
+                        }
+                        else
+                        {
+                            moveSpeedVal = whipCount * whipSpeedVal;
+                        }
                         if (body.outOfCombat && whipCount > 0)
                         {
                             moveSpeedVal = whipCount * whipSpeedVal;
                         }
                         else if (body.inventory?.GetItemCount(DLC1Content.Items.MoveSpeedOnKill) > 0)
                         {
-                            moveSpeedVal = 0.3f;
+                            moveSpeedVal = body.GetBuffCount(RoR2Content.Buffs.WhipBoost) * 0.3f;
                         }
                         return moveSpeedVal;
-                    });
+                    });*/
 
 
 
