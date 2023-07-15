@@ -18,21 +18,17 @@ namespace HuntersHarpoonRework.Behaviors
 {
     public class HuntersHarpoonBehavior : CharacterBody.ItemBehavior
     {
-        private int ticks = 0;
-        public bool generatingStacks = true;
+        private float ticks = 0.0f;
+        //public bool isReady = false;
         private void FixedUpdate()
         {
-            int buffCount = this.body.GetBuffCount(DLC1Content.Buffs.KillMoveSpeed);
-            if (buffCount <= 0 && !this.generatingStacks)
+            if (this.body.GetBuffCount(HuntersHarpoonRework.BurstBuildup) < 100 && !this.body.GetNotMoving())
             {
-                this.generatingStacks = true;
-            }
-            if (this.generatingStacks && this.body.isSprinting && buffCount < 100)
-            {
-                ticks++;
-                if (ticks > 1 )
+                ticks += (this.body.moveSpeed / this.body.baseMoveSpeed);
+                // 5.0f and += 1 was good
+                if (ticks > 12.0f)
                 {
-                    this.body.AddBuff(DLC1Content.Buffs.KillMoveSpeed);
+                    this.body.AddBuff(HuntersHarpoonRework.BurstBuildup);
                     ticks = 0;
                 }
                 
@@ -41,7 +37,7 @@ namespace HuntersHarpoonRework.Behaviors
 
         private void OnDisable()
         {
-            this.body.SetBuffCount(DLC1Content.Buffs.KillMoveSpeed.buffIndex, 0);
+            this.body.SetBuffCount(HuntersHarpoonRework.BurstBuildup.buffIndex, 0);
         }
     }
 

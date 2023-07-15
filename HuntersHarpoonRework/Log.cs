@@ -1,6 +1,6 @@
 ﻿using BepInEx.Logging;
 
-namespace ExamplePlugin
+namespace HuntersHarpoonRework
 {
     internal static class Log
     {
