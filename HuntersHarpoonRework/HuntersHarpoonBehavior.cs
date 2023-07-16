@@ -26,7 +26,7 @@ namespace HuntersHarpoonRework.Behaviors
             {
                 ticks += (this.body.moveSpeed / this.body.baseMoveSpeed);
                 // 5.0f and += 1 was good
-                if (ticks > 12.0f)
+                if (ticks > 5.0f)
                 {
                     this.body.AddBuff(HuntersHarpoonRework.BurstBuildup);
                     ticks = 0;
