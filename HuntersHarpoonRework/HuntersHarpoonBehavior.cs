@@ -14,7 +14,7 @@ using On.RoR2.Projectile;
 using ProjectileDotZone = RoR2.Projectile.ProjectileDotZone;
 using UnityEngine.UIElements;
 
-namespace HuntersHarpoonRework.Behaviors
+/*namespace HuntersHarpoonRework.Behaviors
 {
     public class HuntersHarpoonBehavior : CharacterBody.ItemBehavior
     {
@@ -41,20 +41,4 @@ namespace HuntersHarpoonRework.Behaviors
         }
     }
 
-    /*public class ItemBaseStuff : ItemBase
-    {
-        private const string token = "LIT_ITEM_ENERGYCELL_DESC";
-        public override ItemDef ItemDef { get; set; } = Assets.LITAssets.LoadAsset<ItemDef>("EnergyCell");
-
-        [ConfigurableField(ConfigName = "Maximum Attack Speed per Cell", ConfigDesc = "Maximum amount of attack speed per item held.")]
-        [TokenModifier(token, StatTypes.Percentage)]
-        public static float bonusAttackSpeed = 0.4f;
-
-        public override void AddBehavior(ref CharacterBody body, int stack)
-        {
-            body.AddItemBehavior<EnergyCellBehavior>(stack);
-        }
-
-        
-    }*/
-}
+}*/
