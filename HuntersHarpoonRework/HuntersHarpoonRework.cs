@@ -7,9 +7,6 @@ using R2API;
 using System.Collections.Generic;
 using UnityEngine;
 //using HuntersHarpoonRework.Behaviors;
-using BepInEx.Logging;
-using UnityEngine.AddressableAssets;
-using UnityEngine.Networking;
 
 namespace HuntersHarpoonRework
 {
@@ -29,11 +26,11 @@ namespace HuntersHarpoonRework
         public const string PluginGUID = PluginAuthor + "." + PluginName;
         public const string PluginAuthor = "OakPrime";
         public const string PluginName = "HuntersHarpoonRework";
-        public const string PluginVersion = "2.0.0";
+        public const string PluginVersion = "2.0.1";
 
         private readonly Dictionary<string, string> DefaultLanguage = new Dictionary<string, string>();
 
-        public static BuffDef BurstBuildup;
+        //public static BuffDef BurstBuildup;
 
         //The Awake() method is run at the very start when the game is initialized.
         public void Awake()
